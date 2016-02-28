@@ -31,6 +31,10 @@ contract Token {
     /// @return Amount of remaining tokens allowed to spent
     function allowance(address _owner, address _spender) constant returns (uint256 remaining) {}
 
+    /// @param _value The amount of wei to be removed from circulation
+    /// @return Whether the burning was successful or not
+    function burn(uint256 _value) returns (bool success) {}
+
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
