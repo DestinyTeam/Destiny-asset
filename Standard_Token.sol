@@ -11,6 +11,8 @@ contract Standard_Token is Token {
     function Standard_Token(uint256 _initialAmount) {
         balances[msg.sender] = _initialAmount;
         totalSupply = _initialAmount;
+        totalBurnt = 0;
+        
     }
 
     function () {
@@ -63,7 +65,18 @@ contract Standard_Token is Token {
       return allowed[_owner][_spender];
     }
 
+    function burn(uint256 _value) returns (bool success) {
+        if (balances[msg.sender] >= _value && _value > 0) {
+            balances[msg.sender] -= _value;
+            Transfer(msg.sender, 0, _value);
+            totalSupply -= _value;
+            totalBurnt -= _value;
+            return true;
+        } else { return false; }
+    }
+
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
     uint256 public totalSupply;
+    uint256 public totalBurnt;
 }
