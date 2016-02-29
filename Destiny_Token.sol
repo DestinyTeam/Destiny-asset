@@ -6,9 +6,9 @@ Implements ERC 20 Token standard: https://github.com/ethereum/EIPs/issues/20
 
 import "Token.sol";
 
-contract Standard_Token is Token {
+contract Destiny is Token {
 
-    function Standard_Token(uint256 _initialAmount) {
+    function Destiny(uint256 _initialAmount) {
         balances[msg.sender] = _initialAmount;
         totalSupply = _initialAmount;
         totalBurnt = 0;
