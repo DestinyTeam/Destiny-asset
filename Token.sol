@@ -35,6 +35,9 @@ contract Token {
     /// @return Whether the burning was successful or not
     function burn(uint256 _value) returns (bool success) {}
 
+    /// @return Number of indivisible units in main unit
+    function mainUnit() returns (uint numberOfWei) {}
+
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
