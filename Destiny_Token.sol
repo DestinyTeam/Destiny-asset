@@ -13,7 +13,7 @@ contract Destiny is Token {
         balances[msg.sender] = 210000 * COIN;
         totalSupply = 210000 * COIN;
         totalBurnt = 0;
-        
+        mainUnit = COIN;  
     }
 
     function () {
@@ -76,13 +76,11 @@ contract Destiny is Token {
         } else { return false; }
     }
 
-    function mainUnit() returns (uint numberOfWei) {
-      return COIN;
-    }
 
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
     uint256 public totalSupply;
     uint256 public totalBurnt;
     uint256 public COIN;
+    uint256 public mainUnit;
 }
