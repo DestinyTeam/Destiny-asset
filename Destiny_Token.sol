@@ -8,7 +8,7 @@ import "Token.sol";
 
 contract Destiny is Token {
 
-    function Destiny(uint256 _initialAmount) {
+    function Destiny() {
         COIN = 100000000;
         balances[msg.sender] = 210000 * COIN;
         totalSupply = 210000 * COIN;
