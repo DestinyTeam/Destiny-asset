@@ -13,7 +13,7 @@ contract Destiny is Token {
         balances[msg.sender] = 210000 * COIN;
         totalSupply = 210000 * COIN;
         totalBurnt = 0;
-        mainUnit = COIN;  
+        baseUnit = COIN;  
     }
 
     function () {
@@ -82,5 +82,5 @@ contract Destiny is Token {
     uint256 public totalSupply;
     uint256 public totalBurnt;
     uint256 public COIN;
-    uint256 public mainUnit;
+    uint256 public baseUnit;
 }
