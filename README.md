@@ -4,7 +4,7 @@ Contract of Destiny asset, token which will be used for anonymization on ethereu
 
 Implements ERC 20 Token standard: https://github.com/ethereum/EIPs/issues/20 and some additional features like _burn, baseUnit, COIN, totalBurnt_.
 
-#Contract on Expanse asset
+#Contract on Expanse blockchain
 Address: `0x7041462d67ea5c3df16fad5c330388beb2ddfe71`
 
 Address of Test asset: `0xb5e4ae1ac58caeac1b035dd39f34c72bddd83ced.`
