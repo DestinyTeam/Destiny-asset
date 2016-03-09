@@ -10,8 +10,8 @@ contract Destiny is Token {
 
     function Destiny() {
         COIN = 100000000;
-        balances[msg.sender] = 210000 * COIN;
-        totalSupply = 210000 * COIN;
+        balances[msg.sender] = 2100000 * COIN;
+        totalSupply = 2100000 * COIN;
         totalBurnt = 0;
         baseUnit = COIN;  
     }
