@@ -96,38 +96,43 @@ contract Destiny is Token {
         } else { return false; }
     }
 
+    // Returns rate in tenth of percent
+    function interest(uint256 _value, uint256 _period) returns (uint rate){
+                if (_value > 50000*COIN){
+                    if (_period < 30 days){
+                        return 10;
+                    } else if(_period < 90 days){
+                        return 50;
+                    } else if(_period < 180 days){
+                        return 100;
+                    } else if(_period < 1 years){
+                        return 150;
+                    } else {
+                        return 200;
+                    }
+                } else {
+                    if (_period < 30 days){
+                        return 1;
+                    } else if(_period < 90 days){
+                       return 30;
+                    } else if(_period < 180 days){
+                        return 60;
+                    } else if(_period < 1 years){
+                        return 90;
+                    } else {
+                        return 120;
+                    }
+                }
+    }
+
     function cashOut() returns (bool success) {
         if (deposits[msg.sender].value==0) {
             return false;
         } else {
             if ( now > deposits[msg.sender].creationTime + deposits[msg.sender].period){
-                var interest=0; //interest in units of one thousandth
-                if (deposits[msg.sender].value > 50000*COIN){
-                    if (deposits[msg.sender].period < 30 days){
-                        interest = 10;
-                    } else if(deposits[msg.sender].period < 90 days){
-                        interest = 50;
-                    } else if(deposits[msg.sender].period < 180 days){
-                        interest = 100;
-                    } else if(deposits[msg.sender].period < 1 years){
-                        interest = 150;
-                    } else {
-                        interest = 200;
-                    }
-                } else {
-                    if (deposits[msg.sender].period < 30 days){
-                        interest = 1;
-                    } else if(deposits[msg.sender].period < 90 days){
-                        interest = 30;
-                    } else if(deposits[msg.sender].period < 180 days){
-                        interest = 60;
-                    } else if(deposits[msg.sender].period < 1 years){
-                        interest = 90;
-                    } else {
-                        interest = 120;
-                    }
-                }
-                var profit = deposits[msg.sender].value * interest * deposits[msg.sender].period / (1 years) / 1000;
+                var intrst = interest(deposits[msg.sender].value, deposits[msg.sender].period);
+                
+                var profit = deposits[msg.sender].value * intrst * deposits[msg.sender].period / (1 years) / 1000;
                 balances[msg.sender] += deposits[msg.sender].value + profit ;
                 totalSupply += profit;
                 CheckOut(msg.sender, deposits[msg.sender].value + profit);
@@ -142,14 +147,14 @@ contract Destiny is Token {
         return true;
     }
 
-    function checkDeposit() constant returns (bool success, uint256 value, uint256 remainingTime) {
+    function checkDeposit() constant returns (bool success, uint256 value, uint256 remainingTime, uint256 rate) {
       if (deposits[msg.sender].value==0) {
-            return (false, 0, 0);
+            return (false, 0, 0, 0);
       } else {
         var time = deposits[msg.sender].period - (now - deposits[msg.sender].creationTime);
         if(time>0)
-          return (true, deposits[msg.sender].value,  time);
-        return (true, deposits[msg.sender].value,  0);
+          return (true, deposits[msg.sender].value,  time, interest(deposits[msg.sender].value, deposits[msg.sender].period));
+        return (true, deposits[msg.sender].value,  0, interest(deposits[msg.sender].value, deposits[msg.sender].period));
       }
     }
 
