@@ -143,6 +143,8 @@ contract Destiny is Token {
                 totalSupply -= loss;
                 CheckOut(msg.sender, deposits[msg.sender].value - loss);
             }
+            totalDeposited -= deposits[msg.sender].value;
+            deposits[msg.sender] = DepositInfo(0,0,0);
         }
         return true;
     }
