@@ -142,6 +142,17 @@ contract Destiny is Token {
         return true;
     }
 
+    function checkDeposit() constant returns (bool success, uint256 value, uint256 remainingTime) {
+      if (deposits[msg.sender].value==0) {
+            return (false, 0, 0);
+      } else {
+        var time = deposits[msg.sender].period - (now - deposits[msg.sender].creationTime);
+        if(time>0)
+          return (true, deposits[msg.sender].value,  time);
+        return (true, deposits[msg.sender].value,  0);
+      }
+    }
+
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
     mapping (address => DepositInfo) deposits;
