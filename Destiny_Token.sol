@@ -8,11 +8,18 @@ import "Token.sol";
 
 contract Destiny is Token {
 
+    struct DepositInfo{
+      uint256 value;
+      uint256 period;
+      uint256 creationTime;
+    }
+
     function Destiny() {
         COIN = 100000000;
         balances[msg.sender] = 2100000 * COIN;
         totalSupply = 2100000 * COIN;
         totalBurnt = 0;
+        totalDeposited = 0;
         baseUnit = COIN;  
     }
 
@@ -71,16 +78,76 @@ contract Destiny is Token {
             balances[msg.sender] -= _value;
             Transfer(msg.sender, 0, _value);
             totalSupply -= _value;
-            totalBurnt -= _value;
+            totalBurnt += _value;
             return true;
         } else { return false; }
     }
 
+    event Deposit(address indexed _owner, uint256 _value, uint256 _period);
+    event CheckOut(address indexed _owner, uint256 _value);
+
+    function deposit(uint256 _value, uint256 _period) returns (bool success) {
+        if (balances[msg.sender] >= _value && _value > 0 && deposits[msg.sender].value==0 && _period>0) {
+            balances[msg.sender] -= _value;
+            Deposit(msg.sender, _value, _period);
+            totalDeposited += _value;
+            deposits[msg.sender] = DepositInfo(_value, _period, now);
+            return true;
+        } else { return false; }
+    }
+
+    function cashOut() returns (bool success) {
+        if (deposits[msg.sender].value==0) {
+            return false;
+        } else {
+            if ( now > deposits[msg.sender].creationTime + deposits[msg.sender].period){
+                var interest=0; //interest in units of one thousandth
+                if (deposits[msg.sender].value > 50000*COIN){
+                    if (deposits[msg.sender].period < 30 days){
+                        interest = 10;
+                    } else if(deposits[msg.sender].period < 90 days){
+                        interest = 50;
+                    } else if(deposits[msg.sender].period < 180 days){
+                        interest = 100;
+                    } else if(deposits[msg.sender].period < 1 years){
+                        interest = 150;
+                    } else {
+                        interest = 200;
+                    }
+                } else {
+                    if (deposits[msg.sender].period < 30 days){
+                        interest = 1;
+                    } else if(deposits[msg.sender].period < 90 days){
+                        interest = 30;
+                    } else if(deposits[msg.sender].period < 180 days){
+                        interest = 60;
+                    } else if(deposits[msg.sender].period < 1 years){
+                        interest = 90;
+                    } else {
+                        interest = 120;
+                    }
+                }
+                var profit = deposits[msg.sender].value * interest * deposits[msg.sender].period / (1 years) / 1000;
+                balances[msg.sender] += deposits[msg.sender].value + profit ;
+                totalSupply += profit;
+                CheckOut(msg.sender, deposits[msg.sender].value + profit);
+
+            } else {
+                var loss = deposits[msg.sender].value * 3 / 100;
+                balances[msg.sender] += deposits[msg.sender].value - loss ;
+                totalSupply -= loss;
+                CheckOut(msg.sender, deposits[msg.sender].value - loss);
+            }
+        }
+        return true;
+    }
 
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
+    mapping (address => DepositInfo) deposits;
     uint256 public totalSupply;
     uint256 public totalBurnt;
+    uint256 public totalDeposited;
     uint256 public COIN;
     uint256 public baseUnit;
 }
