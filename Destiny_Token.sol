@@ -20,7 +20,7 @@ contract Destiny is Token {
         totalSupply = 2100000 * COIN;
         totalBurnt = 0;
         totalDeposited = 0;
-        baseUnit = COIN;  
+        baseUnit = COIN;
     }
 
     function () {
@@ -70,7 +70,7 @@ contract Destiny is Token {
     }
 
     function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
-      return allowed[_owner][_spender];
+        return allowed[_owner][_spender];
     }
 
     function burn(uint256 _value) returns (bool success) {
@@ -87,7 +87,7 @@ contract Destiny is Token {
     event CheckOut(address indexed _owner, uint256 _value);
 
     function deposit(uint256 _value, uint256 _period) returns (bool success) {
-        if (balances[msg.sender] >= _value && _value > 0 && deposits[msg.sender].value==0 && _period>0) {
+        if (balances[msg.sender] >= _value && _value > 0 && deposits[msg.sender].value == 0 && _period > 0) {
             balances[msg.sender] -= _value;
             Deposit(msg.sender, _value, _period);
             totalDeposited += _value;
@@ -98,66 +98,73 @@ contract Destiny is Token {
 
     // Returns rate in tenth of percent
     function interest(uint256 _value, uint256 _period) returns (uint rate){
-                if (_value > 50000*COIN){
-                    if (_period < 30 days){
-                        return 10;
-                    } else if(_period < 90 days){
-                        return 50;
-                    } else if(_period < 180 days){
-                        return 100;
-                    } else if(_period < 1 years){
-                        return 150;
-                    } else {
-                        return 200;
-                    }
-                } else {
-                    if (_period < 30 days){
-                        return 1;
-                    } else if(_period < 90 days){
-                       return 30;
-                    } else if(_period < 180 days){
-                        return 60;
-                    } else if(_period < 1 years){
-                        return 90;
-                    } else {
-                        return 120;
-                    }
-                }
+        if (_value > 50000 * COIN) {
+            if (_period < 30 days) {
+                return 10;
+            } else if (_period < 90 days) {
+                return 50;
+            } else if (_period < 180 days) {
+                return 100;
+            } else if (_period < 1 years) {
+                return 150;
+            } else {
+                return 200;
+            }
+        } else {
+            if (_period < 30 days) {
+                return 1;
+            } else if (_period < 90 days) {
+                return 30;
+            } else if (_period < 180 days) {
+                return 60;
+            } else if (_period < 1 years) {
+                return 90;
+            } else {
+                return 120;
+            }
+        }
     }
 
     function cashOut() returns (bool success) {
-        if (deposits[msg.sender].value==0) {
+        if (deposits[msg.sender].value == 0) {
             return false;
         } else {
-            if ( now > deposits[msg.sender].creationTime + deposits[msg.sender].period){
+            if (now > deposits[msg.sender].creationTime + deposits[msg.sender].period) {
                 var intrst = interest(deposits[msg.sender].value, deposits[msg.sender].period);
-                
                 var profit = deposits[msg.sender].value * intrst * deposits[msg.sender].period / (1 years) / 1000;
-                balances[msg.sender] += deposits[msg.sender].value + profit ;
-                totalSupply += profit;
-                CheckOut(msg.sender, deposits[msg.sender].value + profit);
 
+                balances[msg.sender] += deposits[msg.sender].value + profit;
+                totalSupply += profit;
+
+                CheckOut(msg.sender, deposits[msg.sender].value + profit);
             } else {
                 var loss = deposits[msg.sender].value * 3 / 100;
-                balances[msg.sender] += deposits[msg.sender].value - loss ;
+
+                balances[msg.sender] += deposits[msg.sender].value - loss;
                 totalSupply -= loss;
+
                 CheckOut(msg.sender, deposits[msg.sender].value - loss);
             }
+
             totalDeposited -= deposits[msg.sender].value;
             deposits[msg.sender] = DepositInfo(0,0,0);
+
         }
         return true;
     }
 
     function checkDeposit() constant returns (bool success, uint256 value, uint256 remainingTime, uint256 rate) {
-      if (deposits[msg.sender].value==0) {
+        if (deposits[msg.sender].value == 0) {
             return (false, 0, 0, 0);
-      } else {
-        var time = deposits[msg.sender].period - (now - deposits[msg.sender].creationTime);
-        if(time>0)
-          return (true, deposits[msg.sender].value,  time, interest(deposits[msg.sender].value, deposits[msg.sender].period));
-        return (true, deposits[msg.sender].value,  0, interest(deposits[msg.sender].value, deposits[msg.sender].period));
-      }
+        } else {
+            var time = deposits[msg.sender].period - (now - deposits[msg.sender].creationTime);
+
+            if (time > 0) {
+                return (true, deposits[msg.sender].value,  time, interest(deposits[msg.sender].value, deposits[msg.sender].period));
+            } else {
+                return (true, deposits[msg.sender].value,  0, interest(deposits[msg.sender].value, deposits[msg.sender].period));
+            }
+        }
     }
 
     mapping (address => uint256) balances;
