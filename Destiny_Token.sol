@@ -153,11 +153,11 @@ contract Destiny is Token {
         return true;
     }
 
-    function checkDeposit() constant returns (bool success, uint256 value, uint256 remainingTime, uint256 rate) {
+    function checkDeposit() constant returns (bool success, uint256 value, int256 remainingTime, uint256 rate) {
         if (deposits[msg.sender].value == 0) {
             return (false, 0, 0, 0);
         } else {
-            var time = deposits[msg.sender].period - (now - deposits[msg.sender].creationTime);
+            var time = int(deposits[msg.sender].period) - int(now - deposits[msg.sender].creationTime);
 
             if (time > 0) {
                 return (true, deposits[msg.sender].value,  time, interest(deposits[msg.sender].value, deposits[msg.sender].period));
