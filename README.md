@@ -5,9 +5,10 @@ Contract of Destiny asset, token which will be used for anonymization on ethereu
 Implements ERC 20 Token standard: https://github.com/ethereum/EIPs/issues/20 and some additional features like _burn, baseUnit, COIN, totalBurnt_.
 
 #Contract on Expanse blockchain
-Address: `0xb872385d1c132410b77058f34a4f2dfe94047d50`
 
-Address of Test asset: `0xb5e4ae1ac58caeac1b035dd39f34c72bddd83ced.`
+Address: `0xc2be9f4c1657c63c856be47f3972ccb0cb0df125`
+
+Address of Test asset: `0x22e6425f4c918ff0b709922a4057bfd0fa111d6e`
 
 If you need some test-tokens, ask me on bitcointalk (https://bitcointalk.org/index.php?action=profile;u=547912) or destiny-coin.slack.com
 
@@ -15,6 +16,8 @@ If you need some test-tokens, ask me on bitcointalk (https://bitcointalk.org/ind
 ABI:
 
 ```
+
+
 
 [
   {
@@ -83,6 +86,27 @@ ABI:
       {
         "name": "_value",
         "type": "uint256"
+      },
+      {
+        "name": "_period",
+        "type": "uint256"
+      }
+    ],
+    "name": "interest",
+    "outputs": [
+      {
+        "name": "rate",
+        "type": "uint256"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_value",
+        "type": "uint256"
       }
     ],
     "name": "burn",
@@ -90,6 +114,32 @@ ABI:
       {
         "name": "success",
         "type": "bool"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      
+    ],
+    "name": "checkDeposit",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      },
+      {
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "name": "remainingTime",
+        "type": "int256"
+      },
+      {
+        "name": "rate",
+        "type": "uint256"
       }
     ],
     "type": "function"
@@ -107,6 +157,20 @@ ABI:
       {
         "name": "balance",
         "type": "uint256"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      
+    ],
+    "name": "cashOut",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
       }
     ],
     "type": "function"
@@ -196,10 +260,84 @@ ABI:
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "name": "_period",
+        "type": "uint256"
+      }
+    ],
+    "name": "deposit",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      
+    ],
+    "name": "totalDeposited",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "type": "function"
+  },
+  {
     "inputs": [
       
     ],
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "_period",
+        "type": "uint256"
+      }
+    ],
+    "name": "Deposit",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "CheckOut",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -246,6 +384,7 @@ ABI:
     "type": "event"
   }
 ]
+
 
 
 ```
